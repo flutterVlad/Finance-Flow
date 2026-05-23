@@ -152,7 +152,13 @@ class SEn extends S {
   String get income => 'Income';
 
   @override
+  String get spend => 'Expense';
+
+  @override
   String get allSpends => 'All Spends';
+
+  @override
+  String get allIncomes => 'All incomes';
 
   @override
   String addItem(String name) {
@@ -185,6 +191,17 @@ class SEn extends S {
 
   @override
   String get fieldCanNotBeEmpty => 'Field can not be empty';
+
+  @override
+  String get valueInvalid => 'Value invalid';
+
+  @override
+  String get futureDate => 'Date can not be later than today';
+
+  @override
+  String expenseEdited(String name) {
+    return 'Expense \"$name\" edited successfully';
+  }
 
   @override
   String get invalidLength => 'Invalid length';
@@ -223,6 +240,9 @@ class SEn extends S {
 
   @override
   String get editTransaction => 'Edit transaction';
+
+  @override
+  String get email => 'Email';
 
   @override
   String expenseNameCreated(Object expense, String gender, Object type) {

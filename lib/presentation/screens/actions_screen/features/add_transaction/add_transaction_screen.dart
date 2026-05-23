@@ -19,6 +19,7 @@ import '/utils/widgets/primary_button.dart';
 import '/utils/widgets/text_field_section.dart';
 import '/utils/widgets/toast_service.dart';
 import '/utils/widgets/vertical_picker.dart';
+import 'bloc/input_forms.dart';
 import 'bloc/transactions_cubit.dart';
 
 class AddTransactionScreen extends StatefulWidget {
@@ -126,7 +127,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         hintText: s.tripToTurkey,
                         keyboardType: .text,
                         onSubmit: bloc.setName,
-                        errorText: state.nameInput.displayError,
+                        errorText: _inputErrorText(
+                          state.nameInput.displayError,
+                          context,
+                        ),
                       ),
                       Section(
                         controller: _amountController,
@@ -150,7 +154,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             );
                           },
                         ),
-                        errorText: state.amountInput.displayError,
+                        errorText: _inputErrorText(
+                          state.amountInput.displayError,
+                          context,
+                        ),
                         keyboardType: const .numberWithOptions(decimal: true),
                         inputFormatters: [
                           TextInputFormatter.withFunction((_, newValue) {
@@ -171,7 +178,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         },
                         title: s.category,
                         hintText: state.categoryInput.value.name,
-                        errorText: state.categoryInput.displayError,
+                        errorText: _inputErrorText(
+                          state.categoryInput.displayError,
+                          context,
+                        ),
                         suffixIcon: const Icon(
                           Icons.keyboard_arrow_down,
                           color: AppColors.grey,
@@ -189,7 +199,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           Icons.keyboard_arrow_down,
                           color: AppColors.grey,
                         ),
-                        errorText: state.datetimeInput.displayError,
+                        errorText: _inputErrorText(
+                          state.datetimeInput.displayError,
+                          context,
+                        ),
                         onTap: () {
                           AppBottomSheet.showDatePicker(
                             context: context,
@@ -218,7 +231,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           Icons.keyboard_arrow_down,
                           color: AppColors.grey,
                         ),
-                        errorText: state.datetimeInput.displayError,
+                        errorText: _inputErrorText(
+                          state.datetimeInput.displayError,
+                          context,
+                        ),
                         onTap: () {
                           AppBottomSheet.showDatePicker(
                             context: context,
@@ -290,8 +306,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         ),
                       );
                       ToastService.showToast(
-                        message:
-                            'Expense "${state.validExpense.name}" edited successfully',
+                        message: s.expenseEdited(state.validExpense.name),
                       );
                     }
                     if (context.canPop()) context.pop();
@@ -303,6 +318,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         ),
       ),
     );
+  }
+
+  String? _inputErrorText(
+    TransactionInputError? error,
+    BuildContext context,
+  ) {
+    final s = S.of(context);
+
+    return switch (error) {
+      TransactionInputError.empty => s.fieldCanNotBeEmpty,
+      TransactionInputError.invalid => s.valueInvalid,
+      TransactionInputError.futureDate => s.futureDate,
+      null => null,
+    };
   }
 
   Future<void> _chooseCategory(BuildContext context) async {

@@ -21,12 +21,12 @@ dependencies:
   meta: any
 
   # State manager
-  bloc: ^9.1.0
+  bloc: ^9.2.1
   flutter_bloc: ^9.1.1
   provider: ^6.1.5+1
 
   # Network
-  dio: ^5.9.0
+  dio: ^5.9.1
 
   # Annotation
   freezed_annotation: ^3.1.0

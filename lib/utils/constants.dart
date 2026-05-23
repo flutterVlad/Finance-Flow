@@ -7,19 +7,6 @@ abstract class AppAssets {
       'https://img.freepik.com/premium-vector/nothing-rubber-stamp-seal-vector_140916-33117.jpg?semt=ais_hybrid&w=740&q=80';
 }
 
-abstract class AppStrings {
-  static const String monthlyExpenses = 'Monthly expenses';
-  static const String recentExpenses = 'Recent Expenses';
-  static const String spendThisMonth = 'Spend this month';
-  static const String nothingToShow = 'Nothing to show(';
-  static const String chooseDate = 'Choose date';
-  static const String categories = 'Categories';
-  static const String expenses = 'Expenses';
-  static const String incomes = 'Incomes';
-  static const String today = 'Today';
-  static const String yesterday = 'Yesterday';
-}
-
 abstract class AppDimensions {
   static const double emptyStateImageSize = 200.0;
   static const double emptyStateImageRadius = 16.0;

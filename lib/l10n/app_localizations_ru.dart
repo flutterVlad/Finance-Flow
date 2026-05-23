@@ -152,7 +152,13 @@ class SRu extends S {
   String get income => 'Доход';
 
   @override
+  String get spend => 'Траты';
+
+  @override
   String get allSpends => 'Все траты';
+
+  @override
+  String get allIncomes => 'Все доходы';
 
   @override
   String addItem(String name) {
@@ -185,6 +191,17 @@ class SRu extends S {
 
   @override
   String get fieldCanNotBeEmpty => 'Поле не может быть пустым';
+
+  @override
+  String get valueInvalid => 'Неверное значение';
+
+  @override
+  String get futureDate => 'Дата не может быть позже сегодняшнего дня';
+
+  @override
+  String expenseEdited(String name) {
+    return 'Трата \"$name\" успешно изменена';
+  }
 
   @override
   String get invalidLength => 'Некорректная длина';
@@ -223,6 +240,9 @@ class SRu extends S {
 
   @override
   String get editTransaction => 'Изменить транзакцию';
+
+  @override
+  String get email => 'Email';
 
   @override
   String expenseNameCreated(Object expense, String gender, Object type) {

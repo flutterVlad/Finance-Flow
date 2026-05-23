@@ -47,7 +47,9 @@
   "spent": "Потрачено",
   "budget": "Бюджет",
   "income": "Доход",
+  "spend": "Траты",
   "allSpends": "Все траты",
+  "allIncomes": "Все доходы",
   "addItem": "Добавить {name}",
   "@addItem": {
     "placeholders": {
@@ -65,13 +67,23 @@
   "exit": "Выйти",
   "confirm": "Подтвердить",
   "fieldCanNotBeEmpty": "Поле не может быть пустым",
+  "valueInvalid": "Неверное значение",
+  "futureDate": "Дата не может быть позже сегодняшнего дня",
+  "expenseEdited": "Трата \"{name}\" успешно изменена",
+  "@expenseEdited": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "invalidLength": "Некорректная длина",
   "invalidFormat": "Некорректный формат",
   "invalidCardNumber": "Некорректный номер карты",
   "weeklyExpense": "Недельные траты",
   "fromDate": "С {date}",
   "@fromDate": {
-    "placeholder": {
+    "placeholders": {
       "date": {
         "type": "String"
       }
@@ -84,9 +96,10 @@
   "time": "Время",
   "createTransaction": "Создать транзакцию",
   "editTransaction": "Изменить транзакцию",
+  "email": "Email",
   "expenseNameCreated": "{type} \"{expense}\" успешно {gender, select, expense{создана} income{создан} other{создано}}",
   "@expenseNameCreated": {
-    "placeholder": {
+    "placeholders": {
       "type": {
         "type": "String"
       },

@@ -18,9 +18,6 @@ abstract class ExpenseState with _$ExpenseState {
   List<Expense> get monthIncomes =>
       incomes.where((e) => e.datetime.isCurrentMonth).toList();
 
-  List<Expense> get incomesOnSelectedMonth =>
-      incomes.where((e) => e.datetime.isSelectedMonth(monthFilter)).toList();
-
   double get monthBalance => monthIncomes.fold(0, (a, b) => a + b.price);
 
   double get balanceOnSelectedMonth => incomes
@@ -41,10 +38,6 @@ abstract class ExpenseState with _$ExpenseState {
 
   double get remains => monthBalance - monthSpends;
 
-  double get spendsOnSelectedMonth => allExpenses
-      .where((e) => e.datetime.isSelectedMonth(monthFilter))
-      .fold(0, (a, b) => a + b.price);
-
   List<GroupedExpense> get expenseOnSelectedMonth {
     final expenses = allExpenses.where(
       (e) => e.datetime.isSelectedMonth(monthFilter),
@@ -52,6 +45,20 @@ abstract class ExpenseState with _$ExpenseState {
 
     return _unionByCat(expenses.toList());
   }
+
+  double get spendsOnSelectedMonth =>
+      expenseOnSelectedMonth.fold(0, (a, b) => a + b.amount);
+
+  List<GroupedExpense> get incomeOnSelectedMonth {
+    final monthIncomes = incomes.where(
+      (e) => e.datetime.isSelectedMonth(monthFilter),
+    );
+
+    return _unionByCat(monthIncomes.toList());
+  }
+
+  double get incomesOnSelectedMonth =>
+      incomeOnSelectedMonth.fold(0, (a, b) => a + b.amount);
 
   List<DayExpense> get curWeekDayExpenses {
     final today = DateTime.now();

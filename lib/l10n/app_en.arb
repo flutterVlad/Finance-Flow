@@ -54,7 +54,9 @@
   "spent": "Spent",
   "budget": "Budget",
   "income": "Income",
+  "spend": "Expense",
   "allSpends": "All Spends",
+  "allIncomes": "All incomes",
   "addItem": "Add {name}",
   "@addItem": {
     "placeholders": {
@@ -72,13 +74,23 @@
   "exit": "Exit",
   "confirm": "Confirm",
   "fieldCanNotBeEmpty": "Field can not be empty",
+  "valueInvalid": "Value invalid",
+  "futureDate": "Date can not be later than today",
+  "expenseEdited": "Expense \"{name}\" edited successfully",
+  "@expenseEdited": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "invalidLength": "Invalid length",
   "invalidFormat": "Invalid format",
   "invalidCardNumber": "Invalid card number",
   "weeklyExpense": "Weekly Expense",
   "fromDate": "From {date}",
   "@fromDate": {
-    "placeholder": {
+    "placeholders": {
       "date": {
         "type": "String"
       }
@@ -91,9 +103,10 @@
   "time": "Time",
   "createTransaction": "Create transaction",
   "editTransaction": "Edit transaction",
+  "email": "Email",
   "expenseNameCreated": "{type} \"{expense}\" created successfully",
   "@expenseNameCreated": {
-    "placeholder": {
+    "placeholders": {
       "type": {
         "type": "String"
       },

@@ -20,10 +20,8 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     : _currencyRepository = currencyRepository,
       super(
         TransactionsState(
-          datetimeInput: TransactionDateTimeInput.dirty(value: DateTime.now()),
-          categoryInput: TransactionCategoryInput.dirty(
-            value: defaultCategories[3],
-          ),
+          datetimeInput: .dirty(value: DateTime.now()),
+          categoryInput: .dirty(value: defaultCategories[3]),
         ),
       );
   final CurrencyRepository _currencyRepository;
@@ -48,9 +46,7 @@ class TransactionsCubit extends Cubit<TransactionsState> {
   void setCurrency(Currency cur) => emit(state.copyWith(selectedCurrency: cur));
 
   void setName(String? name) {
-    emit(
-      state.copyWith(nameInput: TransactionNameInput.dirty(value: name ?? '')),
-    );
+    emit(state.copyWith(nameInput: .dirty(value: name ?? '')));
   }
 
   void setInitialExpense(Expense? expense) {
@@ -72,7 +68,7 @@ class TransactionsCubit extends Cubit<TransactionsState> {
     emit(
       state.copyWith(
         isIncome: true,
-        categoryInput: TransactionCategoryInput.dirty(
+        categoryInput: .dirty(
           value: defaultCategories.firstWhere((e) => e.id == 33),
         ),
       ),
@@ -80,31 +76,20 @@ class TransactionsCubit extends Cubit<TransactionsState> {
   }
 
   void setAmount(String? amount) {
-    emit(
-      state.copyWith(
-        amountInput: TransactionAmountInput.dirty(value: amount ?? ''),
-      ),
-    );
+    emit(state.copyWith(amountInput: .dirty(value: amount ?? '')));
   }
 
   void setCategory(Category category) {
     emit(
       state.copyWith(
-        categoryInput: TransactionCategoryInput.dirty(value: category),
+        categoryInput: .dirty(value: category),
         isIncome: category.isIncome,
       ),
     );
   }
 
-  void setDate(DateTime date) {
-    emit(
-      state.copyWith(
-        datetimeInput: TransactionDateTimeInput.dirty(value: date),
-      ),
-    );
-  }
+  void setDate(DateTime date) =>
+      emit(state.copyWith(datetimeInput: .dirty(value: date)));
 
-  void setIncome(bool newBool) {
-    emit(state.copyWith(isIncome: newBool));
-  }
+  void setIncome(bool newBool) => emit(state.copyWith(isIncome: newBool));
 }

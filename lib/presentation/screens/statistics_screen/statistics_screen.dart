@@ -40,7 +40,7 @@ class StatisticsScreen extends StatelessWidget {
         ),
         body: const TabBarView(
           children: [
-            PageKeepAliveWrapper(child: Center(child: Text('First'))),
+            PageKeepAliveWrapper(child: IncomeStatistics()),
             PageKeepAliveWrapper(child: SpentStatistics()),
           ],
         ),

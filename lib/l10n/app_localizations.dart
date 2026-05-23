@@ -379,11 +379,23 @@ abstract class S {
   /// **'Income'**
   String get income;
 
+  /// No description provided for @spend.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get spend;
+
   /// No description provided for @allSpends.
   ///
   /// In en, this message translates to:
   /// **'All Spends'**
   String get allSpends;
+
+  /// No description provided for @allIncomes.
+  ///
+  /// In en, this message translates to:
+  /// **'All incomes'**
+  String get allIncomes;
 
   /// No description provided for @addItem.
   ///
@@ -444,6 +456,24 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Field can not be empty'**
   String get fieldCanNotBeEmpty;
+
+  /// No description provided for @valueInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Value invalid'**
+  String get valueInvalid;
+
+  /// No description provided for @futureDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date can not be later than today'**
+  String get futureDate;
+
+  /// No description provided for @expenseEdited.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense \"{name}\" edited successfully'**
+  String expenseEdited(String name);
 
   /// No description provided for @invalidLength.
   ///
@@ -516,6 +546,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Edit transaction'**
   String get editTransaction;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
 
   /// No description provided for @expenseNameCreated.
   ///

@@ -61,7 +61,10 @@ class DI {
       logger: TalkerLogger(output: (message) => log(message, name: 'Talker')),
     );
     getIt.registerSingleton<Talker>(talker);
-    Bloc.observer = TalkerBlocObserver(talker: talker);
+    Bloc.observer = TalkerBlocObserver(
+      talker: talker,
+      settings: const .new(printStateFullData: false),
+    );
   }
 
   void _initDio() {

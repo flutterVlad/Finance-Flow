@@ -18,12 +18,82 @@ class SpentStatistics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CustomScrollView(slivers: [DateFilter(), Diagram(), Income()]);
+    final s = S.of(context);
+
+    return CustomScrollView(
+      slivers: [
+        const DateFilter(),
+        BlocBuilder<ExpenseBloc, ExpenseState>(
+          builder: (context, state) => Diagram(
+            expenses: state.expenseOnSelectedMonth,
+            allSpends: state.spendsOnSelectedMonth,
+            title: s.allSpends,
+          ),
+        ),
+        BlocBuilder<ExpenseBloc, ExpenseState>(
+          buildWhen: (prev, curr) => !const ListEquality().equals(
+            prev.expenseOnSelectedMonth,
+            curr.expenseOnSelectedMonth,
+          ),
+          builder: (context, state) => StatisticDetails(
+            title: s.spent,
+            addedElement: s.spend,
+            amount: state.spendsOnSelectedMonth,
+            expenses: state.expenseOnSelectedMonth,
+            onAdd: () => context.pushNamed('add_transaction'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class IncomeStatistics extends StatelessWidget {
+  const IncomeStatistics({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+
+    return CustomScrollView(
+      slivers: [
+        const DateFilter(),
+        BlocBuilder<ExpenseBloc, ExpenseState>(
+          builder: (context, state) => Diagram(
+            expenses: state.incomeOnSelectedMonth,
+            allSpends: state.incomesOnSelectedMonth,
+            title: S.of(context).allIncomes,
+          ),
+        ),
+        BlocBuilder<ExpenseBloc, ExpenseState>(
+          buildWhen: (prev, curr) => !const ListEquality().equals(
+            prev.incomeOnSelectedMonth,
+            curr.incomeOnSelectedMonth,
+          ),
+          builder: (context, state) => StatisticDetails(
+            title: s.incomes,
+            addedElement: s.income,
+            amount: state.incomesOnSelectedMonth,
+            expenses: state.incomeOnSelectedMonth,
+            onAdd: () => context.pushNamed('add_transaction', extra: true),
+          ),
+        ),
+      ],
+    );
   }
 }
 
 class Diagram extends StatefulWidget {
-  const Diagram({super.key});
+  const Diagram({
+    super.key,
+    required this.expenses,
+    required this.allSpends,
+    required this.title,
+  });
+
+  final List<GroupedExpense> expenses;
+  final double allSpends;
+  final String title;
 
   @override
   State<Diagram> createState() => _DiagramState();
@@ -37,100 +107,91 @@ class _DiagramState extends State<Diagram> {
     final centerSpaceRadius = MediaQuery.widthOf(context) / 5;
     final s = S.of(context);
 
-    return BlocBuilder<ExpenseBloc, ExpenseState>(
-      builder: (context, state) {
-        final expenses = state.expenseOnSelectedMonth;
+    if (widget.allSpends == 0) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const .all(16.0),
+          child: AspectRatio(
+            aspectRatio: 1.5,
+            child: Center(child: Text(s.noDataInThisMonth)),
+          ),
+        ),
+      );
+    }
 
-        final allSpends = state.spendsOnSelectedMonth;
+    final price = touchedIndex != -1
+        ? widget.expenses[touchedIndex].formattedAmount
+        : widget.allSpends.toCleanString();
 
-        if (allSpends == 0) {
-          return SliverToBoxAdapter(
-            child: Padding(
-              padding: const .all(16.0),
-              child: AspectRatio(
-                aspectRatio: 1.5,
-                child: Center(child: Text(s.noDataInThisMonth)),
-              ),
-            ),
-          );
-        }
+    final title = touchedIndex != -1
+        ? widget.expenses[touchedIndex].category.name
+        : widget.title;
 
-        final price = touchedIndex != -1
-            ? expenses[touchedIndex].formattedAmount
-            : allSpends.toCleanString();
-
-        final title = touchedIndex != -1
-            ? expenses[touchedIndex].category.name
-            : s.allSpends;
-
-        return SliverToBoxAdapter(
-          child: Padding(
-            padding: const .all(16),
-            child: AspectRatio(
-              aspectRatio: 1.5,
-              child: Stack(
-                fit: .expand,
-                children: [
-                  Center(
-                    child: Column(
-                      mainAxisSize: .min,
-                      children: [
-                        AnimatedText(text: '$price ${s.byn}'),
-                        AnimatedText(
-                          text: title,
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  PieChart(
-                    PieChartData(
-                      startDegreeOffset: 90,
-                      sectionsSpace: 2,
-                      centerSpaceRadius: centerSpaceRadius,
-                      sections: expenses
-                          .map(
-                            (e) => _makeSectionData(
-                              expense: e,
-                              radius: centerSpaceRadius / 2.5,
-                              isTouched: expenses.indexOf(e) == touchedIndex,
-                            ),
-                          )
-                          .toList(),
-                      pieTouchData: PieTouchData(
-                        enabled: true,
-                        touchCallback: (event, response) {
-                          if (event is! FlTapUpEvent) return;
-
-                          if (response == null ||
-                              response.touchedSection == null) {
-                            setState(() => touchedIndex = -1);
-                            return;
-                          }
-
-                          final tappedIndex =
-                              response.touchedSection!.touchedSectionIndex;
-
-                          if (tappedIndex == touchedIndex) {
-                            setState(() => touchedIndex = -1);
-                            return;
-                          }
-
-                          setState(() => touchedIndex = tappedIndex);
-                        },
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const .all(16),
+        child: AspectRatio(
+          aspectRatio: 1.5,
+          child: Stack(
+            fit: .expand,
+            children: [
+              Center(
+                child: Column(
+                  mainAxisSize: .min,
+                  children: [
+                    AnimatedText(text: '$price ${s.byn}'),
+                    AnimatedText(
+                      text: title,
+                      style: const TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 12,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+
+              PieChart(
+                PieChartData(
+                  startDegreeOffset: 90,
+                  sectionsSpace: 2,
+                  centerSpaceRadius: centerSpaceRadius,
+                  sections: widget.expenses
+                      .map(
+                        (e) => _makeSectionData(
+                          expense: e,
+                          radius: centerSpaceRadius / 2.5,
+                          isTouched: widget.expenses.indexOf(e) == touchedIndex,
+                        ),
+                      )
+                      .toList(),
+                  pieTouchData: PieTouchData(
+                    enabled: true,
+                    touchCallback: (event, response) {
+                      if (event is! FlTapUpEvent) return;
+
+                      if (response == null || response.touchedSection == null) {
+                        setState(() => touchedIndex = -1);
+                        return;
+                      }
+
+                      final tappedIndex =
+                          response.touchedSection!.touchedSectionIndex;
+
+                      if (tappedIndex == touchedIndex) {
+                        setState(() => touchedIndex = -1);
+                        return;
+                      }
+
+                      setState(() => touchedIndex = tappedIndex);
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -155,88 +216,81 @@ class _DiagramState extends State<Diagram> {
   }
 }
 
-class Income extends StatelessWidget {
-  const Income({super.key});
+class StatisticDetails extends StatelessWidget {
+  const StatisticDetails({
+    super.key,
+    required this.title,
+    required this.amount,
+    required this.expenses,
+    required this.onAdd,
+    required this.addedElement,
+  });
+
+  final String title;
+  final String addedElement;
+  final double amount;
+  final List<GroupedExpense> expenses;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    return BlocBuilder<ExpenseBloc, ExpenseState>(
-      buildWhen: (prev, curr) => !const ListEquality().equals(
-        prev.incomesOnSelectedMonth,
-        curr.incomesOnSelectedMonth,
-      ),
-      builder: (context, state) {
-        final incomeExpenses = state.incomesOnSelectedMonth;
-
-        final double income = incomeExpenses.fold(.0, (a, b) => a + b.price);
-
-        return SliverToBoxAdapter(
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const .all(16),
+        child: Material(
+          borderRadius: .circular(16),
           child: Padding(
             padding: const .all(16),
-            child: Material(
-              borderRadius: .circular(16),
-              child: Padding(
-                padding: const .all(16),
-                child: Column(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: .spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: .spaceBetween,
-                      children: [
-                        Text(
-                          s.incomes,
-                          style: const TextStyle(fontWeight: .bold),
-                        ),
-                        Text(
-                          '${income.toCleanString()} ${s.byn}',
-                          style: const TextStyle(color: AppColors.primary),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const .symmetric(vertical: 8.0),
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        padding: .zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          if (index + 1 == incomeExpenses.length + 1) {
-                            return _Element(
-                              elementName: s.income,
-                              onTap: () {
-                                context.pushNamed(
-                                  'add_transaction',
-                                  extra: true,
-                                );
-                              },
-                            );
-                          }
-                          return _Element(expense: incomeExpenses[index]);
-                        },
-                        separatorBuilder: (context, index) => Divider(
-                          color: AppColors.grey.withValues(alpha: 0.5),
-                          height: 20,
-                          indent: 5,
-                          endIndent: 5,
-                        ),
-                        itemCount: incomeExpenses.length + 1,
-                      ),
+                    Text(title, style: const TextStyle(fontWeight: .bold)),
+                    Text(
+                      '${amount.toCleanString()} ${s.byn}',
+                      style: const TextStyle(color: AppColors.primary),
                     ),
                   ],
                 ),
-              ),
+                Padding(
+                  padding: const .symmetric(vertical: 8.0),
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    padding: .zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      if (index + 1 == expenses.length + 1) {
+                        return _Element(
+                          elementName: addedElement,
+                          onTap: onAdd,
+                        );
+                      }
+                      return _Element(expense: expenses[index]);
+                    },
+                    separatorBuilder: (context, index) => Divider(
+                      color: AppColors.grey.withValues(alpha: 0.5),
+                      height: 20,
+                      indent: 5,
+                      endIndent: 5,
+                    ),
+                    itemCount: expenses.length + 1,
+                  ),
+                ),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
 
 class _Element extends StatelessWidget {
   const _Element({this.expense, this.elementName = '', this.onTap});
-  final Expense? expense;
+  final GroupedExpense? expense;
   final String elementName;
   final void Function()? onTap;
 
@@ -250,13 +304,17 @@ class _Element extends StatelessWidget {
         child: Row(
           spacing: 8,
           children: [
-            Svg(expense!.category.iconAsset, color: AppColors.grey, size: 30),
+            Svg(
+              expense!.category.iconAsset,
+              color: expense!.category.color,
+              size: 30,
+            ),
             Column(
               crossAxisAlignment: .start,
               children: [
                 Text(expense!.category.name),
                 Text(
-                  '${expense!.formattedPrice} ${s.byn}',
+                  '${expense!.formattedAmount} ${s.byn}',
                   style: const TextStyle(color: AppColors.grey, fontSize: 12),
                 ),
               ],

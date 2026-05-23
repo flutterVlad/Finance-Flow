@@ -206,7 +206,7 @@ class _EmailSection extends StatelessWidget {
         crossAxisAlignment: .start,
         spacing: 8,
         children: [
-          const Text('Email', style: TextStyle(fontWeight: .w600)),
+          Text(S.of(context).email, style: const TextStyle(fontWeight: .w600)),
           TextInput(
             text: form.email.value,
             keyboardType: .emailAddress,
